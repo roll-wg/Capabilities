@@ -38,7 +38,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-roll-mop-ext-00" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-roll-mopex-cap-latest" ipr="trust200902">
     <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -50,7 +50,7 @@
       <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="MOP extension">RPL Mode of Operation extension</title>
+    <title abbrev="MOP extension">RPL MOP extension and Capabilities</title>
 
     <author fullname="Rahul Arvind Jadhav" initials="R.A." role="editor" surname="Jadhav">
         <organization>Huawei Tech</organization>
