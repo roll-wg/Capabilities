@@ -80,8 +80,14 @@
             <email>pthubert@cisco.com</email>
         </address>
     </author>
+    <author initials="M." surname="Richardson" fullname="Michael Richardson">
+      <organization>Sandelman Software Works</organization>
+      <address>
+        <email>mcr+ietf@sandelman.ca</email>
+      </address>
+    </author>
 
-    <date year="2019" />
+    <date/>
 
     <area>General</area>
 
@@ -332,15 +338,60 @@
             <t>
             <figure align="center" anchor="cap-opt" title="Capabilities
                 Option"><artwork align="center"><![CDATA[
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |   Type = TODO |           Capabilities Flags                  |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Type = TODO | Option Length | Capabilities TLVs
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
                ]]></artwork> </figure>
             </t>
             <t>
-                There are no capability flags defined by this document.
+                Multiple capabilities could be sent in the same message. The
+                length field allows the message parser to skip the capability
+                TLV parsing.
+            </t>
+            <t>
+                <figure align="center" anchor="cap-tlv" title="Capabilities
+                    TLV"><artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   CAPType     |J|C|I|. . . . .| CAPInfo(Opt)
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+               ]]></artwork> </figure>
+            </t>
+            <t>
+                Every capability is identified by its type and it may have an
+                optional Capability Info. Note that a given capability may or
+                may not be diseminated with additional information depending on
+                the 'I' flag.
+            </t>
+            <t>
+                J = Join only as leaf if capability not understood
+            </t>
+            <t>
+                C = Copy capability to children
+            </t>
+            <t>
+                I = Cap Info present
+            </t>
+            <t>
+                <figure align="center" anchor="cap-info" title="Capabilities
+                    Info"><artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   CAPLen      | Cap Info(format decided by individual cap spec)
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+               ]]></artwork> </figure>
+            </t>
+            <t>
+                Capability Information provides additional information for the
+                given capability. The format of this field should be defined as
+                part the individual capability specification and is beyond the
+                scope of this document. This document provides a container
+                format for carrying the capability and its context information.
             </t>
         </section>
         <section anchor="cap-handshake" title="Capabilities Handshake">
