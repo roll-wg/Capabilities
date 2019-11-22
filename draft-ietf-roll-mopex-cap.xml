@@ -9,6 +9,7 @@
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC6550 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6550.xml">
+<!ENTITY RFC6551 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6551.xml">
 <!ENTITY RFC6345 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6345.xml">
 <!ENTITY RFC6775 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6775.xml">
 <!ENTITY RFC5191 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5191.xml">
@@ -38,7 +39,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-roll-mopex-cap-latest" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-roll-capabilities-latest" ipr="trust200902">
     <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -50,7 +51,7 @@
       <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="MOP extension">Mode of Operation extension and Capabilities</title>
+    <title abbrev="RPL Capabilties">RPL Capabilities</title>
 
     <author fullname="Rahul Arvind Jadhav" initials="R.A." role="editor" surname="Jadhav">
         <organization>Huawei Tech</organization>
@@ -98,7 +99,7 @@
      If this element is not present, the default is "Network Working Group",
          which is used by the RFC Editor as a nod to the history of the IETF. -->
 
-    <keyword>RPL, mesh, MOP, extension, capability, capabilities</keyword>
+    <keyword>RPL, mesh, MOP, MOPex, extension, capability, capabilities</keyword>
 
     <!-- Keywords will be incorporated into HTML output
          files in a meta tag but they have no effect on text or nroff
@@ -107,12 +108,8 @@
 
     <abstract>
         <t>
-            RPL allows different mode of operations which allows nodes to have
-            a consensus on the basic primitives that must be supported to join
-            the network. The MOP field in RFC6550 is of 3 bits and is fast
-            depleting.  This document extends the MOP field specification and
-            adds a notion of capabilities using which the nodes can further
-            advertise their support for, possibly optional, capabilities.
+            This draft enables the discovery, advertisement and query of
+            capabilities for RPL nodes.
         </t>
     </abstract>
 </front>
@@ -127,19 +124,7 @@
             participating nodes.
         </t>
         <t>
-            MOP as per <xref target="RFC6550"/> is a 3-bit value carried in DIO
-            messages and is specific to the RPL Instance. The receipient of the
-            DIO message can join the specified network as a router only when it
-            can support the primitives as required by the mode of operation
-            value. For example, in case of MOP=3 (Storing MOP with multicast
-            support) the nodes can join the network as routers only when they
-            can handle the DAO advertisements from the peers and manage routing
-            tables. The 3-bit value is already exhausted and requires
-            replenishment. This document introduces a mechanism to extend mode
-            of operation values.
-        </t>
-        <t>
-            This document further adds a notion of capabilities using which the
+            This document adds a notion of capabilities using which the
             nodes in the network could inform its peers about its additional
             capabilities/features. This document highlights the differences of
             capabilities from that of Mode of operation and explains the
@@ -159,8 +144,10 @@
             </t>
 
             <t>
-                MOPex: Extended MOP: This document extends the MOP values over
-                a bigger range. This extension of MOP is called MOPex.
+                MOPex: Extended MOP: As defined in [I-D.jadhav-roll-mopex].
+                <!-- MOPex: Extended MOP: As defined in <xref
+                    target="I-D.jadhav-roll-mopex"/>.
+                -->
             </t>
 
             <t>
@@ -195,9 +182,33 @@
             </t>
 
             <t>
+                Upstream path/direction: Path or direction from the node to the
+                Root in a DAG.
+            </t>
+
+            <t>
+                Downstream path/direction: Path or direction to the node from
+                the Root in a DAG.
+            </t>
+
+            <t>
                 This document uses terminology described in <xref
                     target="RFC6550"/>. For the sake of readability all the
                 known relevant terms are repeated in this section.
+            </t>
+        </section>
+        <section anchor="cap-what" title="What are Capabilities?">
+            <t>
+                Currently RPL specification does not have a mechanism whereby a
+                node can signal the set of features that are available on its
+                end.  Such a mechanism could help the root to advertise its
+                capabilities and in response also determine some advanced
+                information about the capabilities of the joining nodes.  This
+                document defines Capabilities which could be supported by the
+                nodes and handshaked as part of RPL signaling. Capabilities are
+                embedded as RPL control message option as defined Section 6.7
+                of <xref target = "RFC6550"/> in the base messages of DIO, DAO
+                and DAO-ACK signaling.
             </t>
         </section>
     </section>
@@ -206,11 +217,6 @@
         <t>
             Following are the requirements considered for this documents:
             <list style="format REQ%d:">
-                <t>
-                    MOP extension. Current MOP of 3-bit is fast depleting. An
-                    MOP extension needs to extend the possibility of adding new
-                    MOPs in the future.
-                </t>
                 <t>
                     Backwards compatibility. The new options and new fields in
                     the DIO message should be backward compatible i.e. if there
@@ -230,109 +236,42 @@
                     capabilities option, MOP-extension option or both in the
                     same message.
                 </t>
+                <t>
+                    Capabilities could be explicitly queried.
+                </t>
             </list>
         </t>
-    </section>
-
-    <section anchor="ext_mop" title="Extended MOP Control Message Option">
-        <t>
-            This document reserves existing MOP value 7 to be used as an
-            extender. DIO messages with MOP value of 7 may refer to the
-            Extended MOP (MOPex) option in the DIO message.
-        </t>
-        <t>
-            <figure align="center" anchor="mopex-opt" title="Extended MOP
-            Option"><artwork align="center"><![CDATA[
- 0                   1                   2                   3
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|   Type = TODO |           Extended-MOP-value                  |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-           ]]></artwork> </figure>
-        </t>
-        <section anchor="final-mop" title="Final MOP">
+        <section anchor="cap-why" title="How are Capabilities different from MOP or DIO Configuration Option?">
             <t>
-                An implementation supporting this document MUST calculate the
-                final MOP value as the sum of base MOP (as supported in Section
-                6.3.1. of <xref target = "RFC6550"/>) plus the MOPex value.
-                Thus if the MOPex value is 0, it means the final MOP is 7 since
-                the base MOP in this case will be set to 7.
-            </t>
-            <texttable anchor="final-mop-table" title="Final MOP calculation">
-                <ttcol align='center'>Base MOP</ttcol>
-                <ttcol align='center'>MOPex</ttcol>
-                <ttcol align='center'>Final MOP</ttcol>
-
-                <c>0</c>
-                <c>NA</c>
-                <c>0</c>
-
-                <c>1</c>
-                <c>NA</c>
-                <c>1</c>
-
-                <c>:</c>
-                <c>:</c>
-                <c>:</c>
-
-                <c>6</c>
-                <c>NA</c>
-                <c>6</c>
-
-                <c>7</c>
-                <c>0</c>
-                <c>7</c>
-
-                <c>7</c>
-                <c>1</c>
-                <c>8</c>
-
-                <c>7</c>
-                <c>2</c>
-                <c>9</c>
-
-                <c>:</c>
-                <c>:</c>
-                <c>:</c>
-            </texttable>
-        </section>
-        <section title="Handling MOPex">
-            <t>
-                If the MOPex option is absent in the DIO whose MOP is 7, then
-                the MOPex value can be assumed to be zero (thus the final MOP
-                in this case will be 7). The MOPex value should be referred
-                only if the base MOP value is 7 and if the MOPex option is
-                present. In case the base MOP is 7 and if the MOPex option is
-                present, then the implementation MUST calculate the final MOP
-                after considering the value in MOPex.
+                The Mode of Operation (MOP) field in RPL mandates the
+                operational requirement for the nodes joining as routers. MOP
+                and DIO Configuration Option is strictly controlled by the Root
+                node in RPL. Intermediate 6LRs could not modify the values.
+                Also, the MOP never changes for the lifetime of the RPL
+                Instance. Changes in DIO Configuration Option are possible but
+                are very rare. Capabilities, on the other hand, might change
+                more dynamically.
             </t>
             <t>
-                Note that <xref target="RFC6550"/> allows the node who does not
-                support the received MOP to still join the network as a leaf
-                node. This semantic continues to be true even in case of MOPex.
+                RPL DIO message also carries routing metrics and constraints as
+                specified in <xref target="RFC6551"/>. Metrics and constraints
+                are used as part of objective function which aids in node's
+                rank calculation. A router may use capabilities carried in DIO
+                message as additional metrics/constraints. However,
+                capabilities have a larger scope and may be carried in other
+                messages other than DIO and can flow in both the directions
+                (upstream and downstream).
             </t>
         </section>
     </section>
 
-    <section anchor="cap-why" title="Capabilities">
+    <section anchor="cap-how" title="Capabilities">
         <t>
-            Currently RPL specification does not have a mechanism whereby a
-            node can signal the set of features that are available on its end.
-            Such a mechanism could help the root to advertise its capabilities
-            and in response also determine some advanced information about the
-            capabilities of the joining nodes. The Mode of Operation field in
-            RPL mandates the operational requirement and does not allow loose
-            coupling of additional capabilities. This document defines
-            Capabilities as additional features which could be supported by the
-            nodes and handshaked as part of RPL signaling. Capabilities
-            are embedded as RPL control message option as defined Section 6.7
-            of <xref target = "RFC6550"/> in the base messages of DIO, DAO and
-            DAO-ACK signaling.
-        </t>
-        <t>
-            Note that capabilities and MOPex are mutually exclusive and it is
-            possible for an implementation to support either or both of the
-            options.
+            Handling of Capabilities MUST be supported if the network uses
+            MOPex [I-D.jadhav-roll-mopex].
+            <!-- Handling of Capabilities MUST be supported if the network uses
+            MOPex <xref target="I-D.jadhav-roll-mopex"/>.
+            -->
         </t>
         <section anchor="cap-option" title="Capability Control Message Option">
             <t>
@@ -415,57 +354,19 @@
         </section>
     </section>
 
-    <section anchor="imp-con" title="Implementations Consideration">
-        <t>
-            The MOP-extension could cause 3-byte increase in memory in the
-            RPL-Instance. The MOP field in the RPL-Instance needs to be
-            upgraded to a 32 bit integer.
-        </t>
-        <t>
-            <xref target = "RFC6550" />, it was possible to discard an
-            unsupported DIO-MOP just by inspecting the base message. With this
-            document, the MOPex is a different control message option and thus
-            the discarding of the DIO message could happen after inspecting the
-            message options.
-        </t>
-        <t>
-            A node in storing MOP could independently construct a DAO message
-            with target options containing its child/sub-childs. Thus with
-            capabilities it needs to reconstruct the capabilities field as
-            well. This may result in increase in the memory requirement on per
-            routing-entry basis.
-        </t>
-    </section>
-
     <section anchor="Acknowledgements" title="Acknowledgements">
         <t>
-            Thanks to Georgios Papadopoulos for the review and feedback.
+            Thanks to Georgios Papadopoulos, Li Zhao for the review and
+            feedback.
         </t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
-        <section title="Mode of operation: MOPex">
+        <section title="New option: Capabilities">
             <t>
-                IANA is requested to assign a new Mode of Operation, named
-                "MOPex" for MOP extension under the RPL registry. The value of
-                7 is to be assigned from the "Mode of Operation" space <xref
-                    target="RFC6550"/>
-            </t>
-            <texttable title="Mode of Operation">
-                <ttcol align='center'>Value</ttcol>
-                <ttcol align='center'>Description</ttcol>
-                <ttcol align='center'>Reference</ttcol>
-
-                <c>7</c>
-                <c>MOPex</c>
-                <c>This document</c>
-            </texttable>
-        </section>
-        <section title="New options: MOPex and Capabilities">
-            <t>
-                Two new entries are required for new supporting new options
-                "MOPex", "Capabilities" from the "RPL Control Message Options"
-                space <xref target="RFC6550"/>.
+                New entry is required for supporting new Capabilities
+                option in the "RPL Control Message Options" space <xref
+                    target="RFC6550"/>.
             </t>
             <texttable title="New options">
                 <ttcol align='center'>Value</ttcol>
@@ -473,35 +374,18 @@
                 <ttcol align='center'>Reference</ttcol>
 
                 <c>TBD1</c>
-                <c>MOPex</c>
-                <c>This document</c>
-
-                <c>TBD2</c>
                 <c>Capabilities</c>
                 <c>This document</c>
             </texttable>
         </section>
-        <section title="New Registry for Extended-MOP-value">
-            <t>
-                IANA is requested to create a registry for the
-                extended-MOP-value (MOPex). This registry should be located in
-                TODO.  New MOPex values may be allocated only by an IETF
-                review. Currently no values are defined by this document. Each
-                value is tracked with the following qualities:
-                <list style="symbols">
-                    <t>MOPex value</t>
-                    <t>Description</t>
-                    <t>Defining RFC</t>
-                </list>
-            </t>
-        </section>
         <section title="New Registry for Capabilities Flags">
             <t>
-                IANA is requested to create a registry for the
-                Capabilities flags as described in <xref target="cap-why"/> of this document. This registry should be located in
-                TODO.  New Capabilities flags may be allocated only by an IETF
-                review. Currently no flags are defined by this document. Each
-                value is tracked with the following qualities:
+                IANA is requested to create a registry for the Capabilities
+                flags as described in <xref target="cap-why"/> of this
+                document. This registry should be located in TODO.  New
+                Capabilities flags may be allocated only by an IETF review.
+                Currently no flags are defined by this document. Each value is
+                tracked with the following qualities:
                 <list style="symbols">
                     <t>Flag</t>
                     <t>Description</t>
@@ -544,11 +428,13 @@
     <references title="Normative References">
         <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
         &RFC2119;
+        &RFC6550;
     </references>
 
     <references title="Informative References">
         <!-- Here we use entities that we defined at the beginning. -->
-        &RFC6550;
+        &RFC6551;
+        <!-- <?rfc include='reference.I-D.jadhav-roll-mopex'?>	<.- MOPex draft -->
     </references>
 
     <section anchor="app-additional" title="Capability Handshake Example">
