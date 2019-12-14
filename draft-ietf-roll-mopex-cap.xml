@@ -12,6 +12,8 @@
 <!ENTITY RFC6345 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6345.xml">
 <!ENTITY RFC6775 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6775.xml">
 <!ENTITY RFC5191 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5191.xml">
+<!ENTITY RFC8138 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8138.xml">
+<!ENTITY DAOPROJ SYSTEM "https://www.ietf.org/id/draft-ietf-roll-dao-projection-09.xml">
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <!-- used by XSLT processors -->
@@ -38,7 +40,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-roll-mopex-cap-latest" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-roll-mopex-cap-01" ipr="trust200902">
     <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -329,11 +331,33 @@
             of <xref target = "RFC6550"/> in the base messages of DIO, DAO and
             DAO-ACK signaling.
         </t>
+		
         <t>
             Note that capabilities and MOPex are mutually exclusive and it is
             possible for an implementation to support either or both of the
             options.
         </t>
+		<section title="Capability Catagories">
+			<t>
+				Capabilitie can be divided into two broad categories				
+			</t>
+			<t>
+				Global Capabilities: It will include the features and capability supported across an RPL instance.
+									These capabilities can be advertised by the bith BR and LRs of the DODAG. If a Node
+									in the LLN doesn't support a paticular globl capability it may have to join the 
+									RPL instance as a leaf node, as indicated by that individual capability option.
+									Exacmple of such capabilities are Compression Methods Supported, Support for TE paths (P-DAO).
+			</t>
+			<t>
+									
+				Local Capabilities: It will include the cpabilities very specific to a Node in the LLN. Example of such capabilities are
+									NBR Cache information, Routing Table Information.
+			</t>
+			<t>					
+				Note that some capabilities can be either global or local depending upon the context they are used ex.P-DAO
+			</t>
+			
+		</section>
         <section anchor="cap-option" title="Capability Control Message Option">
             <t>
             <figure align="center" anchor="cap-opt" title="Capabilities
@@ -357,7 +381,7 @@
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|   CAPType     |J|C|I|. . . . .| CAPInfo(Opt)
+|   CAPType     |G|I|. . . . . .| CAPInfo(Opt)
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                ]]></artwork> </figure>
             </t>
@@ -365,16 +389,20 @@
                 Every capability is identified by its type and it may have an
                 optional Capability Info. Note that a given capability may or
                 may not be diseminated with additional information depending on
-                the 'I' flag.
+                the scope of the capability indicated by the G bit.
+				The first Bit of the CAPType indicates if the capability is mandatory or optional
+				Value of 1 indicates its a mandatory capability and 0 indicates its an optional
+				capability
+				
             </t>
             <t>
-                J = Join only as leaf if capability not understood
-            </t>
+                G = If set indicates a Global Capability/Feature else its a local.
+					For a capability if it's mandatory and global bit is set then node thoes either doesn't
+					understand the capability or doesn't have this capability should not join the DODAG as LR.
+					All the global capablities MUST be desiminated across the network.
+            </t>            
             <t>
-                C = Copy capability to children
-            </t>
-            <t>
-                I = Cap Info present
+                I = Cap Info present				
             </t>
             <t>
                 <figure align="center" anchor="cap-info" title="Capabilities
@@ -404,15 +432,193 @@
                 this document. Capabilities advertised by non-root nodes are
                 strictly a subset of the capabilities advertised by the root.
             </t>
-            <t>
+            <t>				
                 In storing MOP, the DAO message from the 6LR could contain
-                multiple target options. The targets of the capabilities option
-                are indicated by one or more Target options that precede the
-                Capabilties Option. This handling is similar to the Transit
+                multiple target options beacuse of the DAO-Aggregation. 
+				The targets of the capabilities option are indicated by one or 
+				more Target options that precede the Capabilties Option. 
+				This handling is similar to the Transit
                 Information Option as supported in Section 6.7.8. of <xref
                     target = "RFC6550" />.
             </t>
         </section>
+		<section title="Capabilities">
+			<section title="Projected Route Capability">
+				<t>
+					<xref target="I-D.ietf-roll-dao-projection"/> proposes mechanisms to compute and install traffic 
+                    engineered paths in the RPL network. It enables an RPL Root to install and maintain 
+                    Projected Routes based on requested path metric, within its DODAG, along with a selected set of 
+					nodes that may or may not include self, for a chosen duration. Projected Route Capability will be 
+					used to enable this TE path calculation. PRC will be an optional global capability. 
+                    Any node that does not understand or support the projected rout functions can still act as an LR.
+				</t>
+				<t>
+					The DODAG root will use projected routes capability to advertise the support of projected routes 
+					with the possible mode of operations and set of path metrics it can use to calculate a projected route.
+					DODAG root will add the PRC to DIO message so that it can disseminate the information in entire DODAG.
+					Router nodes in the LLN receiving DIOs with PRC MUST forward the same into their sub-DODAG without
+					any change even though they don't understand or support the projected route feature.LR will use the path
+					metric information advertised by the DODAG root to learn these metrics from the network and neighbors. 
+					The same information they will use to advertise in the sibling information option. LR will also use these
+					path metrics information to request traffic-engineered routes optimizing a or set of specific network metric(s).
+				</t>
+				<t>					
+					LRs in the network will use this capability to inform the PCE if they can be part of a 
+					storing or non-storing or both mode of projected routes. Here the PRC will be part of the DAO message.
+				</t>
+				<t>					
+					The capability will convey the below information. The PRC MUST have either of the information or both 
+					depending upon the node type.If originator is BR, then both the information MUST be there.
+					<list style="format %I:">
+						<t>
+							Supports projected route for both storing and non-storing mode. 
+						</t>
+						<t>
+							List of supported path metrics that supported that can be used to compute projected routes
+						</t>
+						<t>
+							[To Decide] Can we add the PCE address information to this?
+						</t>
+					</list>				
+				</t>
+				<section title="Format of Projected Route Capability">
+					<t>
+						<figure align="center" anchor="prcap-tlv" title="Projected Route Capability TLV">
+							<artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Type=0x01     |G|I|. . . . . .|     CAPLen    | MOP |  Resvd  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Routing Merric 1        |      Routing Merric 1         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Routing Merric n-1      |      Routing Merric n         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+							]]></artwork> </figure>
+					</t>
+					<t>
+						Type: 0x01.						
+					</t>
+					<t>
+						Flags: DODAG root MUST set G bit to 1 plus LRs MUST set it to 0. I bit will always be set to 1.						
+					</t>
+					<t>
+						CAPLen: 8-bit unsigned integer, representing the length in octets of the option, not including 
+						the Option Type and Length fields.						
+					</t>
+					<t>
+						MOP: 3-bit filed indicating the mode of operation of projected route capability.
+					</t>
+					<t>
+						Resvd: 5-bit unused fileds.They MUST be initialized to zero by the sender and MUST be ignored by the receiver.
+					</t>
+					<t>
+						Routing Merric: 16 bit unsigned integer represetning the the routing metric to be used for TE path calculation.
+						There can be n number of such routing metric fields. These fileds are alowed with the PRC sent by the DODAG ROOT.
+						LRs MUST not send routing metric information with PRC.						
+					</t>
+					<t>
+						<figure align="center" anchor="rmetric" title="Routing Metric Information">
+							<artwork align="center"><![CDATA[
+ 0                   1           
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Type=0x01     |     Resvd     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+						]]></artwork> </figure>
+					</t>
+				</section>
+			</section>
+			<section title="6LoRH Capability">
+				<t> 
+					<xref target="RFC8138"/> introduces a new 6LoWPAN Routing Header (6LoRH) to carry IPv6 routing information.
+					The 6LoRH may contain source routing information such as a compressed form of SRH, and other sorts of routing
+					information such as the RPI and IP-in-IP encapsulation
+				</t>
+				<t> 
+					The transition to <xref target="RFC8138"/> in a network can only be done when all nodes support the specification.
+					In a mixed case with both RFC8138-capable and non-capable nodes it would not be posssible to take advantage of
+					6LoRH.<xref target="I-D.thubert-roll-turnon-rfc8138"/> defines a mechanism to control the use of 6LoRH in a DODAG
+					by using "T" flag bit in RPL configuration option. To assist DODAG root to decide if it has to set "T" flag bit
+					in RPL Configuration Option to enable 6LoRH within its DODAG, all LRs in DODAG MUST inform their support of RFC
+					8138 by adding 6LoRH capability TLV to their advertised capability control message option.
+				</t>
+				<t>
+					DODAG root MUST use 6LoRH capability TLV to inform all the nodes in the DODAG, that DODAG 
+					is RFC8138 compliance.
+				</t>
+				<t>
+					Any LR joining the DODAG MUST add  6LoRH capability TLV to the capability control message option in its DAO 
+                    message to inform BR that it supports RFC8138.If received DAO message doesn't have 6LoRH capability TLV, DODAG 
+					Root MUST conclude the target node doesn't support RFC 8138.So if DODAG is still not using 6LoRH, it MUST 
+					refrain from using the compression and if it is already using it, it MUST deny the LR from joining the 
+					DODAG with proper error code.
+					
+					[TODO- Need to add new Error code].
+				</t>
+				<t>
+					6LoRH capability is an optional capability any node that doesn't understand or support the 6LoRH
+                    can join the DODAG if the "T" flag in the RPL Configuration option is not set otherwise it MUST 
+                    join the network as a leaf node.
+				</t>
+				<section title="Format of 6LoRH Capability">
+				</section>
+			</section>
+			<section title="Routing Resource Capability">
+				<t>
+					Storing mode of operation requires each intermediate router in the LLN to maintain routing states' information
+					in the routing table. LLN routers typically operate with constraints on processing power, memory, and
+					energy (battery power). Memory limits the number of routing states an LR and BR can maintain. 
+					When the routing table of an LR or BR is full, it will either reject the new DAO messages received or will 
+					use some replacement policy to remove a routing entry and add the new one. Rejection of DAO messages will 
+					lead to an increase in DAO message transmission that impacts the energy and network convergence time. 
+					Routing state replacement leads to downward path downtime.
+				</t>
+					
+				<t>
+					One possible way to solve problems due to routing table size constraint is to use this information to add 
+					neighbors to the DAO parent set.Routing resource capability can be used by LR and BR to advertise their 
+					current routing table usage details in the network. LR or LNs in LLN can use this information in the selection of the DAO parent set.
+					PCE can use this information to select intermediate routers for the projected routes.
+				</t>
+				<t>
+					Routing reource capability TLV can occur multiple times in the capability control message option to advertise 
+					below possible routing table information.
+					<list style="format %I:">
+						<t> Master Routing Table Storing </t>
+						<t> Storing mode P-DAO Table</t>
+						<t> Non-Storing mode P-DAO</t>
+					</list>
+				</t>
+				<t>
+					Routing resource capabablity sent in DIO message has link local scope and it MUST not be forwarded.
+				</t>
+				<section title="Format of Routing Resource Capability">
+				</section>
+			</section>
+			<section title="Neighbor Cache Capability">
+				<t>
+					A neighbor cache maintains neighboring one-hop connected nodes information such as MAC address, link-local IP address 
+					and other reachability state information needed for layer two communication.Node density has direct implications on 
+					the neighbor cache. In the constrained network scenario the size of the neighbor cache will be limited. Thus there are 
+					chances that a node may not be able to store all the neighboring nodes in its cache and use replacement algorithms 
+					to evict some of the entries to accommodate the new one.  If the replaced neighbor has installed a DAO route on it 
+					then it can lead to packet loss or additional address resolution message exchange.  To avoid unnecessary replacement 
+					of neighbor cache entries neighbor cache management policy <xref target="I-D.ietf-lwig-nbr-mgmt-policy"/> proposes
+					a solution that will put a restriction on the connectivity to immediate neighbor depending upon the type of neighbor.
+					But this won't solve the problem unless until the availability of neighbor cache is not taken into consideration while
+					selecting the DAO parent set.
+				</t>
+				<t>
+					Neighbor Cache capability can be used by LR and BR to advertise their neighbor cache size information. This capablity 
+					information has only link scope and should not be advertised in the entire network.
+					[TODO-- As neighbor cache entries category is not yet standardized i think we can't use it in capability. With categories
+					format of the TLV is going to chnage.]
+				</t>
+				<section title="Format of Neighbor Cache Capability">
+				</section>
+			</section>
+		</section>
     </section>
 
     <section anchor="imp-con" title="Implementations Consideration">
@@ -544,6 +750,10 @@
     <references title="Normative References">
         <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
         &RFC2119;
+		&RFC8138;
+		<?rfc include='reference.I-D.ietf-roll-dao-projection'?>
+		<?rfc include='reference.I-D.ietf-lwig-nbr-mgmt-policy'?>
+		<?rfc include='reference.I-D.thubert-roll-turnon-rfc8138'?>
     </references>
 
     <references title="Informative References">
