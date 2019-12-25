@@ -40,7 +40,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-roll-mopex-cap-01" ipr="trust200902">
+<rfc category="std" docName="draft-ietf-roll-mopex-cap-latest" ipr="trust200902">
     <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -402,7 +402,7 @@
 					All the global capablities MUST be desiminated across the network.
             </t>            
             <t>
-                I = Cap Info present				
+                I = Cap Info present
             </t>
             <t>
                 <figure align="center" anchor="cap-info" title="Capabilities
@@ -432,7 +432,7 @@
                 this document. Capabilities advertised by non-root nodes are
                 strictly a subset of the capabilities advertised by the root.
             </t>
-            <t>				
+            <t>
                 In storing MOP, the DAO message from the 6LR could contain
                 multiple target options beacuse of the DAO-Aggregation. 
 				The targets of the capabilities option are indicated by one or 
@@ -450,7 +450,7 @@
                     Projected Routes based on requested path metric, within its DODAG, along with a selected set of 
 					nodes that may or may not include self, for a chosen duration. Projected Route Capability will be 
 					used to enable this TE path calculation. PRC will be an optional global capability. 
-                    Any node that does not understand or support the projected rout functions can still act as an LR.
+                    Any node that does not understand or support the projected route functions can still act as an LR.
 				</t>
 				<t>
 					The DODAG root will use projected routes capability to advertise the support of projected routes 
@@ -490,27 +490,27 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 | Type=0x01     |G|I|. . . . . .|     CAPLen    | MOP |  Resvd  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Routing Merric 1        |      Routing Merric 1         |
+|       Routing Metric 1        |      Routing Metric 1         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Routing Merric n-1      |      Routing Merric n         |
+|       Routing Metric n-1      |      Routing Metric n         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 							]]></artwork> </figure>
 					</t>
 					<t>
-						Type: 0x01.						
+						Type: 0x01.
 					</t>
 					<t>
 						Flags: DODAG root MUST set G bit to 1 plus LRs MUST set it to 0. I bit will always be set to 1.						
 					</t>
 					<t>
 						CAPLen: 8-bit unsigned integer, representing the length in octets of the option, not including 
-						the Option Type and Length fields.						
+						the Option Type and Length fields.
 					</t>
 					<t>
-						MOP: 3-bit filed indicating the mode of operation of projected route capability.
+						MOP: 3-bit field indicating the mode of operation of projected route capability.
 					</t>
 					<t>
-						Resvd: 5-bit unused fileds.They MUST be initialized to zero by the sender and MUST be ignored by the receiver.
+						Resvd: 5-bit unused fields.They MUST be initialized to zero by the sender and MUST be ignored by the receiver.
 					</t>
 					<t>
 						Routing Merric: 16 bit unsigned integer represetning the the routing metric to be used for TE path calculation.
