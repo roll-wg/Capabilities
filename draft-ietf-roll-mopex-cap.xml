@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced.
+     An alternate method (rfc include) is described in the references. -->
+
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY RFC6550 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6550.xml">
+<!ENTITY RFC6551 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6551.xml">
+<!ENTITY RFC6345 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6345.xml">
+<!ENTITY RFC6775 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6775.xml">
+<!ENTITY RFC5191 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5191.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs),
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="std" docName="draft-ietf-roll-capabilities-latest" ipr="trust200902">
+    <!-- category values: std, bcp, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN"
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+      <!-- The abbreviated title is used in the page header - it is only necessary if the
+         full title is longer than 39 characters -->
+
+    <title abbrev="RPL Capabilties">RPL Capabilities</title>
+
+    <author fullname="Rahul Arvind Jadhav" initials="R.A." role="editor" surname="Jadhav">
+        <organization>Huawei Tech</organization>
+        <address>
+            <postal>
+                <street>Kundalahalli Village, Whitefield,</street>
+                <city>Bangalore</city>
+                <region>Karnataka</region>
+                <code>560037</code>
+                <country>India</country>
+            </postal>
+            <phone>+91-080-49160700</phone>
+            <email>rahul.ietf@gmail.com</email>
+        </address>
+    </author>
+    <author initials="P" surname="Thubert" fullname="Pascal Thubert">
+        <organization abbrev="Cisco">Cisco Systems, Inc</organization>
+        <address>
+            <postal>
+                <street>Building D</street>
+                <street>45 Allee des Ormes - BP1200 </street>
+                <city>MOUGINS - Sophia Antipolis</city>
+                <code>06254</code>
+                <country>France</country>
+            </postal>
+            <phone>+33 497 23 26 34</phone>
+            <email>pthubert@cisco.com</email>
+        </address>
+    </author>
+    <author initials="M." surname="Richardson" fullname="Michael Richardson">
+      <organization>Sandelman Software Works</organization>
+      <address>
+        <email>mcr+ietf@sandelman.ca</email>
+      </address>
+    </author>
+
+    <date/>
+
+    <area>General</area>
+
+    <workgroup>ROLL</workgroup>
+
+    <!-- WG name at the upperleft corner of the doc,
+         IETF is fine for individual submissions.
+     If this element is not present, the default is "Network Working Group",
+         which is used by the RFC Editor as a nod to the history of the IETF. -->
+
+    <keyword>RPL, mesh, MOP, MOPex, extension, capability, capabilities</keyword>
+
+    <!-- Keywords will be incorporated into HTML output
+         files in a meta tag but they have no effect on text or nroff
+         output. If you submit your draft to the RFC Editor, the
+         keywords will be used for the search engine. -->
+
+    <abstract>
+        <t>
+            This draft enables the discovery, advertisement and query of
+            capabilities for RPL nodes.
+        </t>
+    </abstract>
+</front>
+
+<middle>
+    <section title="Introduction">
+        <t>
+            RPL <xref target="RFC6550"/> specifies a proactive distance-vector
+            based routing scheme. The protocol creates a DAG-like structure
+            which operates with a given "Mode of Operation" (MOP) determining the
+            minimal and mandatory set of primitives to be supported by all the
+            participating nodes.
+        </t>
+        <t>
+            This document adds a notion of capabilities using which the
+            nodes in the network could inform its peers about its additional
+            capabilities/features. This document highlights the differences of
+            capabilities from that of Mode of operation and explains the
+            necessity of it.
+        </t>
+
+        <section title="Requirements Language and Terminology">
+            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+                NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+                in this document are to be interpreted as described in <xref
+                    target="RFC2119">RFC 2119</xref>.</t>
+
+            <t>
+                MOP: Mode of Operation. Identifies the mode of operation of the
+                RPL Instance as administratively provisioned at and distributed
+                by the DODAG root.
+            </t>
+
+            <t>
+                MOPex: Extended MOP: As defined in [I-D.jadhav-roll-mopex].
+                <!-- MOPex: Extended MOP: As defined in <xref
+                    target="I-D.jadhav-roll-mopex"/>.
+                -->
+            </t>
+
+            <t>
+                Capabilities: Additional features or capabilities which might
+                possibly be optional that are supported by the node.
+            </t>
+
+            <t>
+                DAO: DODAG Advertisement Object. An RPL message used to
+                advertise the target information in order to establish routing
+                adjacencies.
+            </t>
+
+            <t>
+                DIO: DODAG Information Object. An RPL message initiated by the
+                root and is used to advertise the network configuration
+                information.
+            </t>
+
+            <t>
+                Current parent: Parent 6LR node before switching to the new
+                path.
+            </t>
+
+            <t>
+                NPDAO: No-Path DAO. A DAO message which has target with lifetime
+                0.
+            </t>
+
+            <t>
+                MOPex: MOP extension as defined in this document.
+            </t>
+
+            <t>
+                Upstream path/direction: Path or direction from the node to the
+                Root in a DAG.
+            </t>
+
+            <t>
+                Downstream path/direction: Path or direction to the node from
+                the Root in a DAG.
+            </t>
+
+            <t>
+                This document uses terminology described in <xref
+                    target="RFC6550"/>. For the sake of readability all the
+                known relevant terms are repeated in this section.
+            </t>
+        </section>
+        <section anchor="cap-what" title="What are Capabilities?">
+            <t>
+                Currently RPL specification does not have a mechanism whereby a
+                node can signal the set of features that are available on its
+                end.  Such a mechanism could help the root to advertise its
+                capabilities and in response also determine some advanced
+                information about the capabilities of the joining nodes.  This
+                document defines Capabilities which could be supported by the
+                nodes and handshaked as part of RPL signaling. Capabilities are
+                embedded as RPL control message option as defined Section 6.7
+                of <xref target = "RFC6550"/> in the base messages of DIO, DAO
+                and DAO-ACK signaling.
+            </t>
+        </section>
+    </section>
+
+    <section anchor="requirements" title="Requirements for this document">
+        <t>
+            Following are the requirements considered for this documents:
+            <list style="format REQ%d:">
+                <t>
+                    Backwards compatibility. The new options and new fields in
+                    the DIO message should be backward compatible i.e. if there
+                    are nodes which support old MOPs they could still operate
+                    in their own instances.
+                </t>
+                <t>
+                    Optional capabilities handshake. Capabilities are features,
+                    possibly optional, which could be handshaked between the
+                    nodes and the root within an RPL Instance.
+                </t>
+                <t>
+                    Capabilities handshake could be optionally added with
+                    existing MOPs. Capabilities been optional in nature could
+                    be put to use with existing MOPs. Capabilities and
+                    MOP-extension is mutually independent i.e. a DIO can have a
+                    capabilities option, MOP-extension option or both in the
+                    same message.
+                </t>
+                <t>
+                    Capabilities could be explicitly queried.
+                </t>
+            </list>
+        </t>
+        <section anchor="cap-why" title="How are Capabilities different from MOP or DIO Configuration Option?">
+            <t>
+                The Mode of Operation (MOP) field in RPL mandates the
+                operational requirement for the nodes joining as routers. MOP
+                and DIO Configuration Option is strictly controlled by the Root
+                node in RPL. Intermediate 6LRs could not modify the values.
+                Also, the MOP never changes for the lifetime of the RPL
+                Instance. Changes in DIO Configuration Option are possible but
+                are very rare. Capabilities, on the other hand, might change
+                more dynamically.
+            </t>
+            <t>
+                RPL DIO message also carries routing metrics and constraints as
+                specified in <xref target="RFC6551"/>. Metrics and constraints
+                are used as part of objective function which aids in node's
+                rank calculation. A router may use capabilities carried in DIO
+                message as additional metrics/constraints. However,
+                capabilities have a larger scope and may be carried in other
+                messages other than DIO and can flow in both the directions
+                (upstream and downstream).
+            </t>
+        </section>
+    </section>
+
+    <section anchor="cap-how" title="Capabilities">
+        <t>
+            Handling of Capabilities MUST be supported if the network uses
+            MOPex [I-D.jadhav-roll-mopex].
+            <!-- Handling of Capabilities MUST be supported if the network uses
+            MOPex <xref target="I-D.jadhav-roll-mopex"/>.
+            -->
+        </t>
+        <section anchor="cap-option" title="Capability Control Message Option">
+            <t>
+            <figure align="center" anchor="cap-opt" title="Capabilities
+                Option"><artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Type = TODO | Option Length | Capabilities TLVs
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+               ]]></artwork> </figure>
+            </t>
+            <t>
+                Multiple capabilities could be sent in the same message. The
+                length field allows the message parser to skip the capability
+                TLV parsing.
+            </t>
+            <t>
+                <figure align="center" anchor="cap-tlv" title="Capabilities
+                    TLV"><artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   CAPType     |J|C|I|. . . . .| CAPInfo(Opt)
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+               ]]></artwork> </figure>
+            </t>
+            <t>
+                Every capability is identified by its type and it may have an
+                optional Capability Info. Note that a given capability may or
+                may not be diseminated with additional information depending on
+                the 'I' flag.
+            </t>
+            <t>
+                J = Join only as leaf if capability not understood
+            </t>
+            <t>
+                C = Copy capability to children
+            </t>
+            <t>
+                I = Cap Info present
+            </t>
+            <t>
+                <figure align="center" anchor="cap-info" title="Capabilities
+                    Info"><artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   CAPLen      | Cap Info(format decided by individual cap spec)
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+               ]]></artwork> </figure>
+            </t>
+            <t>
+                Capability Information provides additional information for the
+                given capability. The format of this field should be defined as
+                part the individual capability specification and is beyond the
+                scope of this document. This document provides a container
+                format for carrying the capability and its context information.
+            </t>
+        </section>
+        <section anchor="cap-handshake" title="Capabilities Handshake">
+            <t>
+                The root node could advertise the set of capabilities it
+                supports in the DIO message. A node could take advantage of the
+                knowledge that the root supports a particular capability.
+                Similarly a node could advertise its capabilities in the DAO
+                message using the capability control message option defined in
+                this document. Capabilities advertised by non-root nodes are
+                strictly a subset of the capabilities advertised by the root.
+            </t>
+            <t>
+                In storing MOP, the DAO message from the 6LR could contain
+                multiple target options. The targets of the capabilities option
+                are indicated by one or more Target options that precede the
+                Capabilties Option. This handling is similar to the Transit
+                Information Option as supported in Section 6.7.8. of <xref
+                    target = "RFC6550" />.
+            </t>
+        </section>
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+        <t>
+            Thanks to Georgios Papadopoulos, Li Zhao for the review and
+            feedback.
+        </t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+        <section title="New option: Capabilities">
+            <t>
+                New entry is required for supporting new Capabilities
+                option in the "RPL Control Message Options" space <xref
+                    target="RFC6550"/>.
+            </t>
+            <texttable title="New options">
+                <ttcol align='center'>Value</ttcol>
+                <ttcol align='center'>Meaning</ttcol>
+                <ttcol align='center'>Reference</ttcol>
+
+                <c>TBD1</c>
+                <c>Capabilities</c>
+                <c>This document</c>
+            </texttable>
+        </section>
+        <section title="New Registry for Capabilities Flags">
+            <t>
+                IANA is requested to create a registry for the Capabilities
+                flags as described in <xref target="cap-why"/> of this
+                document. This registry should be located in TODO.  New
+                Capabilities flags may be allocated only by an IETF review.
+                Currently no flags are defined by this document. Each value is
+                tracked with the following qualities:
+                <list style="symbols">
+                    <t>Flag</t>
+                    <t>Description</t>
+                    <t>Defining RFC</t>
+                </list>
+            </t>
+        </section>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+        <t>
+            The options defined in this document are carried in the base
+            message objects as defined in <xref target = "RFC6550" />. The RPL
+            control message options are protected by the same security
+            mechanisms that protect the base messages.
+        </t>
+        <t>
+            Capabilities flag can reveal that the node has been upgraded or is
+            running a old feature set. This document assumes that the base
+            messages that carry these options are protected by RPL security
+            mechanisms and thus are not visible to a malicious node.
+        </t>
+    </section>
+</middle>
+
+<back>
+    <!-- References split into informative and normative -->
+
+    <!-- There are 2 ways to insert reference entries from the citation libraries:
+     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+
+     Both are cited textually in the same manner: by using xref elements.
+     If you use the PI option, xml2rfc will, by default, try to find included files in the same
+     directory as the including file. You can also define the XML_LIBRARY environment variable
+     with a value containing a set of directories to search.  These can be either in the local
+     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+
+    <references title="Normative References">
+        <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
+        &RFC2119;
+        &RFC6550;
+    </references>
+
+    <references title="Informative References">
+        <!-- Here we use entities that we defined at the beginning. -->
+        &RFC6551;
+        <!-- <?rfc include='reference.I-D.jadhav-roll-mopex'?>	<.- MOPex draft -->
+    </references>
+
+    <section anchor="app-additional" title="Capability Handshake Example">
+        <t>
+            <figure align="center" anchor="cap-handshake-example"
+                title="Capabilities Option"><artwork align="center"><![CDATA[
+Root          6LR          6LN
+ |             |            |
+ |   DIO(CS1)  |            |
+ |------------>|  DIO(CS1)  |
+ |             |----------->|
+ |             |            |
+ |             |   DAO(CS2) |
+ |             |<-----------|
+ |   DAO(CS2)  |            |
+ |<------------|            |
+ |             |            |
+CS: Capabilities Set
+CS1: Capabilities set advertised by root
+CS2: Capabilities set advertised by node. CS2 is a subset of CS1.
+               ]]></artwork> </figure>
+        </t>
+    </section>
+
+</back>
+</rfc>
