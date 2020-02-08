@@ -96,7 +96,7 @@
 
     <date/>
 
-    <area>General</area>
+    <area>Routing</area>
 
     <workgroup>ROLL</workgroup>
 
@@ -290,18 +290,23 @@
             Capabilities can be divided into two broad categories:
 	    </t>
 	    <t>
-		Global Capabilities: It will include the features and capability supported across an RPL instance.
-				These capabilities can be advertised by the Root or 6LRs of the DODAG. If a Node
-				in the LLN doesn't support a paticular global capability it may have to join the 
-				RPL instance as a leaf node, as indicated by that individual capability option.
-				Example of such capabilities are Compression Methods Supported, Support for TE paths (P-DAO).
+            Global Capabilities: It will include the features and capability
+            supported across an RPL instance.  These capabilities can be advertised
+            by the Root or 6LRs of the DODAG. If a Node in the LLN doesn't support
+            a paticular global capability it may have to join the RPL instance as a
+            leaf node, as indicated by that individual capability option.  Example
+            of such capabilities are Compression Methods Supported, Support for TE
+            paths (P-DAO).
 	    </t>
 	    <t>					
-	    	Local Capabilities: It will include the cpabilities very specific to a Node in the LLN. Example of such capabilities are
-				NBR Cache information, Routing Table Information.
+            Local Capabilities: It will include the cpabilities very specific
+            to a Node in the LLN. Example of such capabilities are NBR Cache
+            information, Routing Table Information.
 	    </t>
 	    <t>					
-	    	Note that some capabilities can be either global or local depending upon the context they are used ex.P-DAO
+            Note that some capabilities can be either global or local depending
+            upon the context they are used ex.P-DAO
+            [TODO: This is not clear]
 	    </t>			
 	</section>
         <section anchor="cap-option" title="Capability Control Message Option">
@@ -335,17 +340,18 @@
                 Every capability is identified by its type and it may have an
                 optional Capability Info. Note that a given capability may or
                 may not be diseminated with additional information depending on
-                the scope of the capability indicated by the G bit.
-				The first Bit of the CAPType indicates if the capability is mandatory or optional
-				Value of 1 indicates its a mandatory capability and 0 indicates its an optional
-				capability
+                the scope of the capability indicated by the G bit.  The first
+                Bit of the CAPType indicates if the capability is mandatory or
+                optional Value of 1 indicates its a mandatory capability and 0
+                indicates its an optional capability
 				
             </t>
             <t>
-                G = If set indicates a Global Capability else its a local.
-					For a capability if it's mandatory and global bit is set then node those either doesn't
-					understand the capability or doesn't have this capability should not join the DODAG as a router.
-					All the global capablities MUST be diseminated across the network.
+                G = If set indicates a Global Capability else its a local.  For
+                a capability if it's mandatory and global bit is set then node
+                those either doesn't understand the capability or doesn't have
+                this capability should not join the DODAG as a router.  All the
+                global capablities MUST be diseminated across the network.
             </t>
             <t>
                 I = Cap Info present
@@ -764,19 +770,6 @@
 </middle>
 
 <back>
-    <!-- References split into informative and normative -->
-
-    <!-- There are 2 ways to insert reference entries from the citation libraries:
-     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
-     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
-        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
-
-     Both are cited textually in the same manner: by using xref elements.
-     If you use the PI option, xml2rfc will, by default, try to find included files in the same
-     directory as the including file. You can also define the XML_LIBRARY environment variable
-     with a value containing a set of directories to search.  These can be either in the local
-     filing system or remote ones accessed by http (http://domain/dir/... ).-->
-
     <references title="Normative References">
         <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
         &RFC2119;
