@@ -282,14 +282,14 @@
         </t>
 	<section title="Capability Catagories">
 	    <t>
-		Capabilitie can be divided into two broad categories				
+		Capabilities can be divided into two broad categories				
 	    </t>
 	    <t>
 		Global Capabilities: It will include the features and capability supported across an RPL instance.
-				These capabilities can be advertised by the bith BR and LRs of the DODAG. If a Node
-				in the LLN doesn't support a paticular globl capability it may have to join the 
+				These capabilities can be advertised by the Root or 6LRs of the DODAG. If a Node
+				in the LLN doesn't support a paticular global capability it may have to join the 
 				RPL instance as a leaf node, as indicated by that individual capability option.
-				Exacmple of such capabilities are Compression Methods Supported, Support for TE paths (P-DAO).
+				Example of such capabilities are Compression Methods Supported, Support for TE paths (P-DAO).
 	    </t>
 	    <t>					
 	    	Local Capabilities: It will include the cpabilities very specific to a Node in the LLN. Example of such capabilities are
