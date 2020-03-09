@@ -1,10 +1,8 @@
-# RPL Mode of Operation extension
+# RPL Capabilities
 
-This is the working area for the IETF [ROLL Working Group](https://datatracker.ietf.org/wg/roll/documents/) Internet-Draft, "RPL Mode of Operation extension".
+This document adds a notion of capabilities using which the nodes in the network could inform its peers about its additional capabilities/features.
 
-* [Editor's Copy](https://roll-wg.github.io/MOPex-capabilities/#go.draft-ietf-roll-mop-ext-latest.html)
-* [Working Group Draft](https://tools.ietf.org/html/draft-ietf-roll-mop-ext-latest)
-* [Compare Editor's Copy to Working Group Draft](https://roll-wg.github.io/MOPex-capabilities/#go.draft-ietf-roll-mop-ext-latest.diff)
+This is the working area for the IETF [ROLL Working Group](https://datatracker.ietf.org/wg/roll/documents/) Internet-Draft, "RPL Capabilities".
 
 ## Building the Draft
 
