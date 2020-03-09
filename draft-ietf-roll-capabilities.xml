@@ -540,7 +540,7 @@
                     zero by the sender and MUST be ignored by the receiver.
                 </t>
                 <t>
-                    Routing Metric: 16 bit unsigned integer represetning
+                    Routing Metric: 16 bit unsigned integer representing
                     the routing metric to be used for TE path calculation.
                     There can be n number of such routing metric fields.
                     These fileds are alowed with the PRC sent by the DODAG
