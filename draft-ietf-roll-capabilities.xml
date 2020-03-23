@@ -52,7 +52,7 @@
       <!-- The abbreviated title is used in the page header - it is only necessary if the
          full title is longer than 39 characters -->
 
-    <title abbrev="RPL Capabilties">RPL Capabilities</title>
+    <title abbrev="RPL Capabilities">RPL Capabilities</title>
 
     <author fullname="Rahul Arvind Jadhav" initials="R.A." role="editor" surname="Jadhav">
         <organization>Huawei Tech</organization>
@@ -392,7 +392,7 @@
                 In storing MOP, the DAO message from the 6LR could contain
                 multiple target options because of the DAO-Aggregation.  The
                 targets of the capabilities option are indicated by one or more
-                Target options that precede the Capabilties Option.  This
+                Target options that precede the Capabilities Option.  This
                 handling is similar to the Transit Information Option as
                 supported in Section 6.7.8. of <xref target = "RFC6550" />.
             </t>
@@ -565,44 +565,44 @@
                 Header (6LoRH) to carry IPv6 routing information.  The
                 6LoRH may contain source routing information such as a
                 compressed form of SRH, and other sorts of routing
-                information such as the RPI and IP-in-IP encapsulation
+                information such as the RPI and IP-in-IP encapsulation.
             </t>
             <t> 
                 The transition to <xref target="RFC8138"/> in a network can
                 only be done when all nodes support the specification.  In
                 a mixed case with both RFC8138-capable and non-capable
-                nodes it would not be posssible to take advantage of
-                6LoRH.<xref target="I-D.thubert-roll-turnon-rfc8138"/>
+                nodes, it would not be posssible to take advantage of
+                6LoRH. <xref target="I-D.thubert-roll-turnon-rfc8138"/>
                 defines a mechanism to control the use of 6LoRH in a DODAG
                 by using "T" flag bit in RPL configuration option. To
-                assist DODAG root to decide if it has to set "T" flag bit
-                in RPL Configuration Option to enable 6LoRH within its
-                DODAG, all LRs in DODAG MUST inform their support of <xref
-                    target="RFC8138"/> by adding 6LoRH capability TLV to
+                assist a DODAG root in deciding to set the "T" flag bit
+                in RPL Configuration Option (to enable 6LoRH within its
+                DODAG), all LRs in DODAG MUST inform their support of <xref
+                    target="RFC8138"/> by adding the 6LoRH capability TLV to
                 their advertised capability control message option.
             </t>
             <t>
-                DODAG root MUST use 6LoRH capability TLV to inform all the
-                nodes in the DODAG, that DODAG is <xref target="RFC8138"/>
-                compliance. 6LoRH is an optional local capability.
+                The DODAG root MUST use the 6LoRH capability TLV to inform all the
+                nodes in the DODAG, that the DODAG is <xref target="RFC8138"/>
+                compliant. 6LoRH is an optional local capability.
             </t>
             <t>
-                Any LR joining the DODAG MUST add  6LoRH capability TLV to
-                the capability control message option in its DAO message to
-                inform BR that it supports RFC8138.If received DAO message
-                doesn't have 6LoRH capability TLV, DODAG Root MUST conclude
-                the target node doesn't support RFC 8138.So if DODAG is
-                still not using 6LoRH, it MUST refrain from using the
-                compression and if it is already using it, it MUST deny the
+                Any LR joining the DODAG MUST add the 6LoRH capability TLV to
+                the capability control message option in its DAO messages to
+                inform BR that it supports <xref target="RFC8138"/>. If a received DAO message
+                doesn't have the 6LoRH capability TLV, the DODAG Root MUST conclude
+                that the target node doesn't support <xref target="RFC8138"/>. So if a DODAG is
+                still not using 6LoRH, its Root MUST refrain from using the
+                compression or if it is already using it, it MUST deny the
                 LR from joining the DODAG with proper error code.
 
                 [TODO- Need to add new Error code].
             </t>
             <t>
-                6LoRH capability is an optional capability any node that
+                The 6LoRH capability is an optional capability: any node that
                 doesn't understand or support the 6LoRH can join the DODAG
-                if the "T" flag in the RPL Configuration option is not set
-                otherwise it MUST join the network as a leaf node.
+                if the "T" flag in the RPL Configuration option is not set,
+                otherwise it MUST join as a leaf node.
             </t>
             <section title="Format of 6LoRH Capability">
                 <t>
@@ -622,7 +622,7 @@
                     Flags: LRs MUST set it to 0. I bit will always be set to 0.						
                 </t>
                 <t>
-                    Reserved: 16-bit unsigned integer, they MUST be
+                    Reserved: 16-bit unsigned integer, it MUST be
                     initialized to zero by the sender and MUST be ignored
                     by the receiver..
                 </t>
