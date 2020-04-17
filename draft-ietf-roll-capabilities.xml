@@ -150,10 +150,8 @@
             </t>
 
             <t>
-                MOPex: Extended MOP: As defined in [I-D.jadhav-roll-mopex].
-                <!-- MOPex: Extended MOP: As defined in <xref
-                    target="I-D.jadhav-roll-mopex"/>.
-                -->
+                MOPex: Extended MOP: As defined in <xref
+                    target="I-D.ietf-roll-mopex"/>.
             </t>
 
             <t>
@@ -274,40 +272,30 @@
     <section anchor="cap-how" title="Capabilities">
     	<t>
             Handling of Capabilities MUST be supported if the network uses
-            MOPex [I-D.jadhav-roll-mopex].
-            <!-- Handling of Capabilities MUST be supported if the network uses
-            MOPex <xref target="I-D.jadhav-roll-mopex"/>.
-            -->
+            MOPex <xref target="I-D.ietf-roll-mopex"/>.
         </t>
-		
         <t>
             Note that capabilities and MOPex are mutually exclusive and it is
             possible for an implementation to support either or both of the
             options.
         </t>
-	<section title="Capability Catagories">
+	<section title="Capability Categories">
 	    <t>
             Capabilities can be divided into two broad categories:
 	    </t>
 	    <t>
-            Global Capabilities: It will include the features and capability
-            supported across an RPL instance.  These capabilities can be advertised
-            by the Root or 6LRs of the DODAG. If a Node in the LLN doesn't support
-            a paticular global capability it may have to join the RPL instance as a
-            leaf node, as indicated by that individual capability option.  Example
-            of such capabilities are Compression Methods Supported, Support for TE
-            paths (P-DAO).
+            Global Capabilities: These include the capabilities supported
+            across an RPL instance and are advertised by the Root of the DODAG.
+            If a node in the LLN doesn't support a particular global capability
+            it may have to join the RPL instance as a leaf node, as indicated
+            by that individual capability option.  Example of such capabilities
+            are Compression Methods Supported, Support for TE paths (P-DAO).
 	    </t>
 	    <t>					
-            Local Capabilities: It will include the cpabilities very specific
-            to a Node in the LLN. Example of such capabilities are NBR Cache
-            information, Routing Table Information.
+            Local Capabilities: It will include the capabilities very specific
+            to a node in the LLN. Example of such capabilities are NBR Cache
+            information, Routing table information.
 	    </t>
-	    <t>					
-            Note that some capabilities can be either global or local depending
-            upon the context they are used ex.P-DAO
-            [TODO: This is not clear]
-	    </t>			
 	</section>
         <section anchor="cap-option" title="Capability Control Message Option">
             <t>
@@ -444,10 +432,47 @@
                         peers of its changed status by sending a DIO with infinite
                         rank as mentioned in <xref target="RFC6550"/>.
                     </t>
+                    <t hangText="When to use and when not to use
+                        Capabilities?"> <vspace /> Capabilities are used to
+                        indicate a feature that is supported by the node.
+                        Capabilities are not meant for configuration management
+                        for e.g., setting a threshold./>.
+                    </t>
             </section>
         </section>
     </section>
     <section anchor="roll-caps" title="ROLL Capabilities">
+        <section anchor="cap-ind" title="Capability Indicators">
+            <t> 
+                Capability Indicators indicates the capabilities supported by
+                the node in the form of simple flags. Capabilities who do not
+                have additional information to be specified could make use of
+                these flags to indicate their support.
+            </t>
+            <section title="Format of Capability Indicators">
+                <t>
+                    <figure align="center" anchor="cap-ind-tlv" title="Capability Indicators TLV">
+                        <artwork align="center"><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Type=0x01     |J|I|G|C|. . . .|     Len=3     |. . . . . Indic|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|ators . . . . . . . . . . . .|T|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+                            ]]></artwork> </figure>
+                </t>
+                <t>
+                    Flags: LRs MUST set it to 0. I bit will always be set to 0.						
+                </t>
+                <t>
+                    24-bit Indicators: Currently right most bit is used to
+                    indicate 'T' bit indicating support for 6LoRH. All the
+                    unused Indicator bits MUST be set to zero.
+                </t>
+            </section>
+        </section>
+        <!--
         <section title="Projected Route Capability (PRC)">
             <t>
                 <xref target="I-D.ietf-roll-dao-projection"/> proposes
@@ -511,7 +536,7 @@
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Type=0x01     |J|I|G|C|. . . .|     CAPLen    | MOP |  Resvd  |
+| Type=0x02     |J|I|G|C|. . . .|     CAPLen    | MOP |  Resvd  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |       Routing Metric 1        |      Routing Metric 1         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -611,7 +636,7 @@
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Type=0x02     |J|I|G|C|. . . .|           Reserved            |
+| Type=0x02     |J|I|G|C|. . . .|          FeatureSet           |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                             ]]></artwork> </figure>
                 </t>
@@ -628,6 +653,7 @@
                 </t>
             </section>
         </section>
+        -->
         <section title="Routing Resource Capability">
             <t>
                 Storing mode of operation requires each intermediate router
@@ -676,10 +702,10 @@
 0                   1                   2                   3
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| Type=0x03     |J|I|G|C|. . . .|     CAPLen    | RT  |  Resvd  |
+| Type=0x03     |J|I|G|C|. . . .|     CAPLen    |  Reserved     |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|        Total Capacity         |  Used Per     |   Threshold   |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|        Total Capacity         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
                             ]]></artwork> </figure>
                 </t>
                 <t>
@@ -694,40 +720,16 @@
                     and Length fields.
                 </t>
                 <t>
-                    RT: 3-bit field indicating the routing resource type.
-                    This document defines 3 routing resource type.
-                    <list style="format %I:">
-                        <t> Master Routing Table Storing(RT = 1) </t>
-                        <t> Storing mode P-DAO Table(RT = 2)</t>
-                        <t> Non-Storing mode P-DAO(RT = 3)</t>
-                    </list>
-                </t>
-                <t>
-                    Resvd: 5-bit unused field. It MUST be initialized to
+                    Resvd: 8-bit unused field. It MUST be initialized to
                     zero by the sender and MUST be ignored by the receiver.
                 </t>
                 <t>
                     Total Capacity: 16 bit unsigned integer representing
                     the the routing table size.						
                 </t>
-                <t>
-                    Percentage used: 8 bit unsigned integer representing
-                    the the percentage of routing table space currently in
-                    use.						
-                </t>
-                <t>
-                    Threshold: 8 bit unsigned integer representing the
-                    maximum routing table space that can be used. If the
-                    routing resource type is RT1 and used Percentage is
-                    greater than or equal to a threshold, its siblings MUST
-                    stop using it as the preferred parent or remove it from
-                    the parent list. If the routing resource type is RT2 or
-                    RT3 and used Percentage is greater than or equal to a
-                    threshold, PCE MUST recompute some projected routes by
-                    excluding this node.					
-                </t>
             </section>
         </section>
+        <!--
         <section title="Neighbor Cache Capability">
             <t>
                 A neighbor cache maintains neighboring one-hop connected
@@ -755,19 +757,17 @@
                 Neighbor Cache capability can be used by LR and BR to
                 advertise their neighbor cache size information. This
                 capablity information has only link scope and should not be
-                advertised in the entire network.  [TODO-- As neighbor
-                cache entries category is not yet standardized i think we
-                can't use it in capability. With categories format of the
-                TLV is going to chnage.]
+                advertised in the entire network. 
             </t>
             <section title="Format of Neighbor Cache Capability">
             </section>
         </section>
+        -->
     </section>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
         <t>
-            Thanks to Georgios Papadopoulos, Li Zhao for the review and
+            Thanks to Georgios Papadopoulos, Li Zhao for early review and
             feedback.
         </t>
     </section>
@@ -797,6 +797,20 @@
                 Capabilities flags may be allocated only by an IETF review.
                 Currently no flags are defined by this document. Each value is
                 tracked with the following qualities:
+                <list style="symbols">
+                    <t>Flag</t>
+                    <t>Description</t>
+                    <t>Defining RFC</t>
+                </list>
+            </t>
+        </section>
+        <section title="New Registry for Capabilities Indicators">
+            <t>
+                IANA is requested to create a registry for the Capabilities
+                Indicators as described in <xref target="cap-ind"/> of this
+                document. This registry should be located in TODO.  New
+                Capabilities indicators may be allocated only by an IETF review.
+                Each value is tracked with the following qualities:
                 <list style="symbols">
                     <t>Flag</t>
                     <t>Description</t>
@@ -840,7 +854,7 @@
         <!-- Here we use entities that we defined at the beginning. -->
         &RFC6551;
         <?rfc include='reference.I-D.ietf-lwig-nbr-mgmt-policy'?>
-        <!-- <?rfc include='reference.I-D.jadhav-roll-mopex'?>	<.- MOPex draft -->
+        <?rfc include='reference.I-D.ietf-roll-mopex'?>
     </references>
 
     <section anchor="app-additional" title="Capability Handshake Example">
