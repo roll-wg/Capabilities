@@ -611,15 +611,15 @@
         &RFC2119;
         &RFC6550;
         &RFC8138;
-        <?rfc include='reference.I-D.ietf-roll-dao-projection'?>
-        <?rfc include='reference.I-D.thubert-roll-turnon-rfc8138'?>
+        <?rfc include='reference.I-D.ietf-roll-mopex'?>
     </references>
 
     <references title="Informative References">
         <!-- Here we use entities that we defined at the beginning. -->
         &RFC6551;
+        <?rfc include='reference.I-D.ietf-roll-dao-projection'?>
+        <?rfc include='reference.I-D.thubert-roll-turnon-rfc8138'?>
         <?rfc include='reference.I-D.ietf-lwig-nbr-mgmt-policy'?>
-        <?rfc include='reference.I-D.ietf-roll-mopex'?>
     </references>
 
     <section anchor="app-additional" title="Capability Handshake Example">
