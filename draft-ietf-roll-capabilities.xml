@@ -131,11 +131,10 @@
             participating nodes.
         </t>
         <t>
-            This document adds a notion of capabilities using which the
-            nodes in the network could inform its peers about its additional
-            capabilities/features. This document highlights the differences of
-            capabilities from that of Mode of operation and explains the
-            necessity of it.
+            This document adds a notion of capabilities using which nodes in the
+            network could inform its peers about its additional capabilities.
+            This document highlights the differences of capabilities from that
+            of Mode of operation and explains the necessity of it.
         </t>
 
         <section title="Requirements Language and Terminology">
@@ -145,9 +144,9 @@
                     target="RFC2119">RFC 2119</xref>.</t>
 
             <t>
-                MOP: Mode of Operation. Identifies the mode of operation of the
-                RPL Instance as administratively provisioned at and distributed
-                by the DODAG root.
+                MOP: Mode of Operation. Identifies the MOP of the RPL Instance
+                as administratively provisioned at and distributed by the DODAG
+                root.
             </t>
 
             <t>
@@ -156,8 +155,8 @@
             </t>
 
             <t>
-                Capabilities: Additional features or capabilities which might
-                possibly be optional that are supported by the node.
+                Capabilities: Additional features or capabilities that are
+                supported by the node.
             </t>
 
             <t>
@@ -180,10 +179,6 @@
             <t>
                 NPDAO: No-Path DAO. A DAO message which has target with lifetime
                 0.
-            </t>
-
-            <t>
-                MOPex: MOP extension as defined in this document.
             </t>
 
             <t>
@@ -246,15 +241,15 @@
                 </t>
             </list>
         </t>
-        <section anchor="cap-why" title="How are Capabilities different from MOP or DIO Configuration Option?">
+        <section anchor="cap-why" title="How are Capabilities different from existing RPL primitives?">
             <t>
                 The Mode of Operation (MOP) field in RPL mandates the
                 operational requirement for the nodes joining as routers. MOP
                 and DIO Configuration Option is strictly controlled by the Root
-                node in RPL. Intermediate 6LRs could not modify the values.
+                node in RPL. Intermediate 6LRs cannot modify these fields.
                 Also, the MOP never changes for the lifetime of the RPL
                 Instance. Changes in DIO Configuration Option are possible but
-                are very rare. Capabilities, on the other hand, might change
+                are rare. Capabilities, on the other hand, might change
                 more dynamically.
             </t>
             <t>
@@ -358,12 +353,9 @@
         </t>
         <section anchor="caps-handling-flags" title="Handling Capability flags">
             <t>
-                A node MUST drop or discard the message silently having an unknown
-                capability with 'D' (discard) flag set.
-            </t>
-            <t>
-                The 'I' (information) flag is set only when there is additional
-                information to be set in context to the capability.
+                A node MUST drop or discard the message with an unknown
+                capability with 'D' flag set. The message MUST be discarded
+                silently.
             </t>
             <t>
                 The 'J' (join) flag can be set in context to a capability
@@ -373,7 +365,8 @@
             </t>
             <t>
                 The 'C' (copy) flag is set by the node indicating that the
-                capabilities MUST be copied downstream by the node.
+                capabilities MUST be copied downstream by the node even if the
+                node does not understand the capability.
             </t>
             <section anchor="flags-rules" title="Rules to handle capabilities flag">
                     <t hangText="How should node react to capability it does
@@ -385,18 +378,21 @@
                     </t>
                     <t hangText="How should node react to capability it does
                         not support after joining the Instance?"> <vspace />
-                        If the node is operating as 6LR and subsequently it
-                        receives a capability which it doesn't understand with 'J'
-                        flag set, then the node has to switch itself to 6LN mode.
-                        During switching the node needs to inform its downstream
-                        peers of its changed status by sending a DIO with infinite
-                        rank as mentioned in <xref target="RFC6550"/>.
+                        If the node is operating as 6LR and subsequently it receives 
+                            a capability from its preferred parent which it does
+                            not understand with 'J' flag set, then the node has
+                            to switch itself to 6LN mode. During switching the
+                            node needs to inform its downstream peers of its
+                            changed status by sending a DIO with infinite rank
+                            as mentioned in RFC6550. Alternatively, a node may
+                            decide to switch to another parent with compatible
+                            and known capabilities.
                     </t>
                     <t hangText="When to use and when not to use
                         Capabilities?"> <vspace /> Capabilities are used to
                         indicate a feature that is supported by the node.
                         Capabilities are not meant for configuration management
-                        for e.g., setting a threshold./>.
+                        for e.g., setting a threshold.
                     </t>
             </section>
         </section>
