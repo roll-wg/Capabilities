@@ -160,6 +160,14 @@
             </t>
 
             <t>
+                Cap: Abbreviated term used for Capability.
+            </t>
+
+            <t>
+                Caps: Abbreviated term used for Capabilities.
+            </t>
+
+            <t>
                 DAO: DODAG Advertisement Object. An RPL message used to
                 advertise the target information in order to establish routing
                 adjacencies.
@@ -342,6 +350,176 @@
                 handling is similar to the Transit Information Option as
                 supported in Section 6.7.8. of <xref target = "RFC6550" />.
             </t>
+        </section>
+    </section>
+    <section anchor="caps-query-rsp" title="Querying Capabilities">
+        <t>
+            Capabilities are node properties and another node may be interested
+            in knowing those. Caps can be carried in existing RPL Control
+            messages as Control Options, however Caps can also be queried
+            explicitly. This section provides a way for a node to query
+            capability set of another node. The capability query and subsequent
+            response messages are directly addressed between the two peers.
+        </t>
+        <t>
+            <list hangIndent="4" style="hanging">
+                <t hangText="Query subset:">
+                    Possible to query a subset or whole capability set.
+                </t>
+                <t hangText="Multi-Message response:">
+                    If the capability set does not fit in a single message then
+                    it should be possible to send it across multiple messages.
+                </t>
+                <t hangText="Stateless operation:">
+                    Stateless capability query and response.
+                </t>
+                <t hangText="Async Caps update:">
+                    Update the capability asynchronously.
+                </t>
+                <t hangText="Handle Node reboots:">
+                    Capability set of a node may change on reboot (for e.g.,
+                    because of firmware update). It should be possible for the
+                    end nodes to determine this change.
+                </t>
+            </list>
+        </t>
+        <section anchor="caps-query" title="Capability Query (CAPQ)">
+            <t> <figure align="center" anchor="capq_obj"
+                title="CAPQ base object"> <artwork align="center"><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| RPLInstanceID |       Flags   |   reserved    | CAPQSequence  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Option(s)...
++-+-+-+-+-+-+-+-+
+                        ]]></artwork> </figure>
+            </t>
+            <t>
+                <list hangIndent="4" style="hanging">
+                    <!--
+                    <t hangText="NCSS:">
+                        One byte, Node Configuration State Sequence. The
+                        Last-NCSS represents the last known NCSS reported by the
+                        destination node. This value is set to zero if the
+                        last-NCSS is not known.
+                    </t>
+                    -->
+                    <t hangText="CAPQSequence:">
+                        One byte, Sequence number sent by the CAPQ sender which
+                        is reflected back by the responder in the CAPS message.
+                    </t>
+                    <t hangText="Flags:">
+                        One byte, set to zero by sender, ignored by receiver.
+                    </t>
+                    <t hangText="reserved:">
+                        One byte, set to zero by sender, ignored by receiver.
+                    </t>
+                </list>
+            </t>
+            <t>
+                CAPQ base object may be followed by one or more options. The
+                Capability Type List Control Option <xref target="cap-tlist"/>
+                is used to carry a set of capability types to query about.
+            </t>
+            <t>
+                If no options are followed, this would indicate that the node
+                intends to query all the capability set of the target node.
+            </t>
+            <!--
+            <t>
+                NCSS is a sequence counter following the sequence operation
+                as mentioned in Section 7.2 of RFC6550 and is used by the node to
+                synchronize the capability set. The querying node will use this
+                to check if it has the latest capability set from the node. NCSS
+                may change only if any element of the capability set changes.
+                Note that NCSS is applicable for the whole capability set and
+                not individual capability. The idea is that the capability set
+                will change infrequently hence a common NCSS is sufficient for
+                all Caps. If the querying node is not aware of the last known
+                NCSS of the target node then it sets the NCSS to 0.
+            </t>
+            -->
+            <section anchor="capq-opts" title="Capability Type List Control Option">
+                <t>
+                    <figure align="center" anchor="cap-tlist"
+                    title="Capability Type List Control Option">
+                    <artwork align="center"> <![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Type = TODO | Option Length |  CapType1     |  CapType2     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  CapType3     |  .....
++-+-+-+-+-+-+-+-+-+-+-+-+
+                   ]]></artwork> </figure>
+                </t>
+            </section>
+            <section title="Secure CAPQ">
+                <t>
+                    A Secure CAPQ message follows the format in <xref
+                        target="RFC6550"/> Figure 7, where the base message
+                    format is the CAPQ message shown in <xref
+                        target="capq_obj"/>.
+                </t>
+            </section>
+            <section title="Base rules for CAPQ handling">
+                <t>
+                    A CAPQ message may get dropped or lost in the transit. The
+                    sender of CAPQ MAY retry the CAPQ message after some delay.
+                    The delay SHOULD NOT be less than 1 second.
+                </t>
+            </section>
+        </section>
+        <section anchor="caps-rsp" title="Capability Set Response (CAPS)">
+            <t> <figure align="center" anchor="caps_obj"
+                title="CAPS base object"><artwork align="center"><![CDATA[
+0                   1                   2                   3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| RPLInstanceID |    Flags      |  Reserved     |  CAPQSequence |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Option(s)...
++-+-+-+-+-+-+-+-+
+                        ]]></artwork> </figure>
+            </t>
+            <t>
+                <list hangIndent="4" style="hanging">
+                    <t hangText="Flags:">
+                        One byte, set to zero by sender, ignored by receiver.
+                    </t>
+                    <t hangText="reserved:">
+                        One byte, set to zero by sender, ignored by receiver.
+                    </t>
+                    <t hangText="CAPQSequence:">
+                        One byte, Sequence number copied from CAPQSequence
+                        received in the CAPQ message.
+                    </t>
+                    <!--
+                    <t hangText="CAPQStatus:">
+                        One byte status value indicating status of the
+                        capability query. The status could be 0(indicating
+                        Success) or 1 (indicating subset of queried cap set not
+                        supported). If the status is 1 then the option 
+                        <xref target="cap-tlist"/> SHOULD be sent indicating 
+                        the cap types which are not supported.
+                    </t>
+                    -->
+                </list>
+            </t>
+            <t>
+                The Options could contain <xref target="cap-tlist"/>
+                indicating the queried capabilities not-supported by the 
+                target node.
+            </t>
+            <section title="Secure CAPS">
+                <t>
+                    A Secure CAPS message follows the format in <xref
+                        target="RFC6550"/> Figure 7, where the base message
+                    format is the CAPS message shown in <xref
+                        target="caps_obj"/>.
+                </t>
+            </section>
         </section>
     </section>
     <section anchor="caps-guidelines" title="Guidelines for defining new capabilities">
@@ -534,13 +712,57 @@
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
+        <t>
+            IANA is requested to allocate new codes for the CAPQ and CAPS
+            messages from the RPL Control Codes registry.
+        </t>
+
+        <texttable title="">
+            <ttcol align='center'>Code</ttcol>
+            <ttcol align='center'>Description</ttcol>
+            <ttcol align='center'>Reference</ttcol>
+
+            <c>TBD1</c>
+            <c>Capability Query</c>
+            <c>This document</c>
+            <c>TBD2</c>
+            <c>Capability Response</c>
+            <c>This document</c>
+            <c>TBD3</c>
+            <c>Secure Capability Query</c>
+            <c>This document</c>
+            <c>TBD4</c>
+            <c>Secure Capability Response</c>
+            <c>This document</c>
+        </texttable>
         <section title="New option: Capabilities">
             <t>
                 New entry is required for supporting new Capabilities
-                option in the "RPL Control Message Options" space <xref
-                    target="RFC6550"/>.
+                option and new Capability Type List Option in the "RPL Control
+                Message Options" space <xref target="RFC6550"/>.
             </t>
             <texttable title="New options">
+                <ttcol align='center'>Value</ttcol>
+                <ttcol align='center'>Meaning</ttcol>
+                <ttcol align='center'>Reference</ttcol>
+
+                <c>TODO</c>
+                <c>Capability Option</c>
+                <c>This document</c>
+
+                <c>TODO</c>
+                <c>Capability Type List Option</c>
+                <c>This document</c>
+            </texttable>
+        </section>
+        <section title="Capability Sub-Type">
+            <t>
+                IANA is requested to create a registry for the Capabilities
+                Type as described in <xref target="cap-tlv"/> of this
+                document. This registry should be located in TODO.  New
+                Capabilities types may be allocated only by an IETF review.
+            </t>
+            <texttable title="Type">
                 <ttcol align='center'>Value</ttcol>
                 <ttcol align='center'>Meaning</ttcol>
                 <ttcol align='center'>Reference</ttcol>
@@ -554,6 +776,56 @@
                 <c>This document</c>
             </texttable>
         </section>
+        <section title="New Registry for CAPQ Flags">
+            <t>
+                IANA is requested to create a registry for the Capabilities
+                flags as described in <xref target="caps-query"/> of this
+                document. This registry should be located in TODO.  New
+                Capabilities flags may be allocated only by an IETF review.
+                Currently no flags are defined by this document. Each value is
+                tracked with the following qualities:
+                <list style="symbols">
+                    <t>Flag</t>
+                    <t>Description</t>
+                    <t>Defining RFC</t>
+                </list>
+            </t>
+        </section>
+        <!--
+        <section title="New Registry for the CAPQStatus field">
+            <t>
+                IANA is requested to create a registry for the 8-bit CAPQ
+                Status field <xref target="caps-rsp"/>. This registry
+                should be located in existing category of "Routing Protocol for
+                Low Power and Lossy Networks (RPL)".
+            </t>
+            <t>
+                New Status values may be allocated only by an IETF Review. Each
+                value is tracked with the following qualities:
+            </t>
+            <t>
+                <list style="symbols">
+                    <t>Status Code</t>
+                    <t>Description</t>
+                    <t>Defining RFC</t>
+                </list>
+            </t>
+            <t>
+                The following values are currently defined:
+            </t>
+            <texttable title="CAPQStatus Codes">
+                <ttcol align='center'>Status Code</ttcol>
+                <ttcol align='center'>Description</ttcol>
+                <ttcol align='center'>Reference</ttcol>
+                <c>0</c>
+                <c>OK</c>
+                <c>This document</c>
+                <c>1</c>
+                <c>Partial or Full queried capability set not supported</c>
+                <c>This document</c>
+            </texttable>
+        </section>
+        -->
         <section title="New Registry for Capabilities Flags">
             <t>
                 IANA is requested to create a registry for the Capabilities
