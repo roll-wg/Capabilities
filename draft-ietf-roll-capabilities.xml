@@ -356,8 +356,9 @@
             Nodes may be interested in knowing the capabilities of another node
             before taking an action. For e.g., Consider 
             <xref target="I-D.ietf-roll-dao-projection"/>, the Root may want to 
-            know the capabilities of all the nodes along a network segment before 
-            it initiates a projected DAO to install the routes.
+            know the capabilities of the nodes along a network segment before 
+            it initiates a projected DAO to install the routes along that
+            segment.
         </t>
         <t>
             Caps can be carried in existing RPL Control messages as Control
@@ -524,7 +525,8 @@
                 capabilities then the <xref target="cap-tlist"/> option
                 with the unsupported cap-types SHOULD be sent back 
                 indicating the queried capabilities not-supported by the 
-                target node.
+                target node. For an example, check 
+                <xref target="partial-cap"/>
             </t>
             <t>
                 If the CAPQ message does not contain any 
@@ -743,7 +745,7 @@
             messages from the RPL Control Codes registry.
         </t>
 
-        <texttable title="">
+        <texttable title="New RPL Control Messages">
             <ttcol align='center'>Code</ttcol>
             <ttcol align='center'>Description</ttcol>
             <ttcol align='center'>Reference</ttcol>
@@ -761,6 +763,11 @@
             <c>Secure Capability Response</c>
             <c>This document</c>
         </texttable>
+
+        <t>
+            The MSB of the codes allocated to "Secure" messages above should be
+            set.
+        </t>
         <section title="New option: Capabilities">
             <t>
                 New entry is required for supporting new Capabilities
@@ -921,26 +928,79 @@
     </references>
 
     <section anchor="app-additional" title="Capability Handshake Example">
-        <t>
-            <figure align="center" anchor="cap-handshake-example"
-                title="Capabilities Option"><artwork align="center"><![CDATA[
-                   Root          6LR          6LN
-                    |             |            |
-                    |   DIO(CS1)  |            |
-                    |------------>|  DIO(CS1)  |
-                    |             |----------->|
-                    |             |            |
-                    |             |   DAO(CS2) |
-                    |             |<-----------|
-                    |   DAO(CS2)  |            |
-                    |<------------|            |
-                    |             |            |
-                    CS: Capabilities Set
-                    CS1: Capabilities set advertised by root
-                    CS2: Capabilities set advertised by node. CS2 is a subset of CS1.
+        <section title="Query supported Cap Types">
+            <t>
+                <figure align="center" anchor="query-cap-types"
+                    title="Query supported Cap Types"><artwork align="center"><![CDATA[
+Root                             6LR/6LN
+|                                   |
+|  CAPQ(seq=1, opts=nil)            |
+|---------------------------------->|
+|                                   |
+|                                   |
+|  CAPS(seq=1, opts={CapTypeList})  |
+|<----------------------------------|
+|                                   |
                     ]]></artwork> </figure>
-        </t>
+            </t>
+            <t>
+                CAPQ message with no CapTypeList Option results in the peer
+                responding with a CAPS message with CapTypeList Option indicating
+                all the capability set it supports.
+            </t>
+        </section>
+        <section title="Query specific Cap Set">
+            <t>
+                <figure align="center" anchor="cap-query-specific-cap"
+                    title="Query specific Cap Set"><artwork align="center"><![CDATA[
+Root                             6LR/6LN
+|                                   |
+|  CAPQ(seq=2,                      |
+|   opts={CapTypeList=[Cap1, Cap2]})|
+|---------------------------------->|
+|                                   |
+|                                   |
+|  CAPS(seq=2,                      |
+|       opts={Cap1=Cap1Value,       |
+|             Cap2=Cap2Value})      |
+|<----------------------------------|
+|                                   |
+                    ]]></artwork> </figure>
+            </t>
+            <t>
+                This flow indicates the case where the Root probes for specific
+                Capabilities of the peer node and the peer node responds with the
+                value of indicated Capability set.
+            </t>
+        </section>
+        <section anchor="partial-cap" title="CAPS with partial Cap Set">
+            <t>
+                <figure align="center" title="Partial Capability Set handshake">
+                    <artwork align="center"><![CDATA[
+Root                             6LR/6LN
+|                                   |
+|  CAPQ(seq=3,                      |
+|   opts={CapTypeList=[Cap1, Cap2,  |
+|                      Cap3, Cap4]})|
+|---------------------------------->|
+|                                   |
+|                                   |
+|  CAPS(seq=3,                      |
+|    opts={Cap2=Cap2Value,          |
+|          Cap3=Cap3Value,          |
+|          CapTypeList=[Cap1,Cap4]})|
+|<----------------------------------|
+|                                   |
+                    ]]></artwork> </figure>
+            </t>
+            <t>
+                Assume that Root queries for capabilities {Cap1, Cap2, Cap3, Cap4}
+                from the peer node. However the peer node does not support or does
+                not understand capability {cap1, cap4}. In this case the peer node
+                will respond back with value of Cap2 and Cap3 (which it understands)
+                and set the CapTypeList option with {Cap1, Cap4} type.
+            </t>
+        </section>
     </section>
-
 </back>
 </rfc>
