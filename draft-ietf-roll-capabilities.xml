@@ -131,10 +131,10 @@
             participating nodes.
         </t>
         <t>
-            This document adds a notion of capabilities using which nodes in the
+            This document adds a notion of capabilities, through which a node in the
             network could inform its peers about its additional capabilities.
-            This document highlights the differences of capabilities from that
-            of Mode of operation and explains the necessity of it.
+            This document highlights the differences between capabilities and
+            Mode of Operation and explains the necessity for the former.
         </t>
 
         <section title="Requirements Language and Terminology">
@@ -168,13 +168,14 @@
             </t>
 
             <t>
-                DAO: DODAG Advertisement Object. An RPL message used to
+                DAO: DODAG Advertisement Object. A RPL message used to
+                <!-- assuming RPL is pronounced Ripple -->
                 advertise the target information in order to establish routing
                 adjacencies.
             </t>
 
             <t>
-                DIO: DODAG Information Object. An RPL message initiated by the
+                DIO: DODAG Information Object. A RPL message initiated by the
                 root and is used to advertise the network configuration
                 information.
             </t>
@@ -185,8 +186,9 @@
             </t>
 
             <t>
-                NPDAO: No-Path DAO. A DAO message which has target with lifetime
-                0.
+                NPDAO: No-Path DAO. A DAO message that contains a target option with lifetime
+                equal to 0.
+                <!-- The Target option does not have a Lifetime field. Did you mean Transit? -->
             </t>
 
             <t>
@@ -214,7 +216,7 @@
                 information about the capabilities of the joining nodes.  This
                 document defines Capabilities which could be supported by the
                 nodes and handshaked as part of RPL signaling. Capabilities are
-                embedded as an RPL Control Message Option as defined
+                embedded as a RPL Control Message Option as defined
                 in Section 6.7 of <xref target="RFC6550"/>.
             </t>
         </section>
@@ -229,6 +231,7 @@
                     the DIO message should be backward compatible i.e. if there
                     are nodes which support old MOPs they could still operate
                     in their own instances.
+                    <!-- I recognize the same sentence as in the MOPEX draft. Is it a really relevant here? Why mention old MOPs here? -->
                 </t>
                 <t>
                     Optional capabilities handshake. Capabilities are features,
@@ -237,9 +240,9 @@
                 </t>
                 <t>
                     Capabilities handshake could be optionally added with
-                    existing MOPs. Capabilities been optional in nature could
+                    existing MOPs. Capabilities, being optional in nature, could
                     be put to use with existing MOPs. Capabilities and
-                    MOP-extension is mutually independent i.e. a DIO can have a
+                    MOP-extension are mutually independent i.e. a DIO can have a
                     capabilities option, MOP-extension option or both in the
                     same message.
                 </t>
@@ -262,11 +265,11 @@
             <t>
                 RPL DIO message also carries routing metrics and constraints as
                 specified in <xref target="RFC6551"/>. Metrics and constraints
-                are used as part of objective function which aids in node's
+                are used in addition to an objective function to determine a node's
                 rank calculation. A router may use capabilities carried in DIO
                 message as additional metrics/constraints. However,
-                capabilities have a larger scope and may be carried in other
-                messages other than DIO and can flow in both the directions
+                capabilities have a larger scope and may be carried in
+                messages other than DIO and can flow in either direction
                 (upstream and downstream).
             </t>
         </section>
@@ -295,7 +298,7 @@
                ]]></artwork> </figure>
             </t>
             <t>
-                Multiple capabilities could be sent in the same message. The
+                Multiple capabilities can be sent in the same message. The
                 length field allows the message parser to skip the capability
                 TLV parsing.
             </t>
@@ -312,7 +315,7 @@
             <t>
                 Every capability is identified by its type and it may have an
                 optional Capability Info. Note that a given capability may or
-                may not be diseminated with additional information depending on
+                may not be disseminated with additional information depending on
                 the scope of the capability indicated by the I bit.
             </t>
             <t>
@@ -333,16 +336,16 @@
         </section>
         <section anchor="cap-handshake" title="Capabilities Handshake">
             <t>
-                The root node could advertise the set of capabilities it
-                supports in the DIO message. A node could take advantage of the
+                The root node can advertise the set of capabilities it
+                supports in the DIO message. A node can take advantage of the
                 knowledge that the root supports a particular capability.
-                Similarly a node could advertise its capabilities in the DAO
+                Similarly a node can advertise its capabilities in the DAO
                 message using the capability control message option defined in
                 this document. Capabilities advertised by non-root nodes are
                 strictly a subset of the capabilities advertised by the root.
             </t>
             <t>
-                In storing MOP, the DAO message from the 6LR could contain
+                In storing MOP, the DAO message from the 6LR can contain
                 multiple target options because of the DAO-Aggregation.  The
                 targets of the capabilities option are indicated by one or more
                 Target options that precede the Capabilities Option.  This
@@ -354,8 +357,8 @@
     <section anchor="caps-query-rsp" title="Querying Capabilities">
         <t>
             Nodes may be interested in knowing the capabilities of another node
-            before taking an action. For e.g., Consider 
-            <xref target="I-D.ietf-roll-dao-projection"/>, the Root may want to 
+            before taking an action. For example, consider 
+            <xref target="I-D.ietf-roll-dao-projection"/>, in which the Root may want to 
             know the capabilities of the nodes along a network segment before 
             it initiates a projected DAO to install the routes along that
             segment.
@@ -363,7 +366,7 @@
         <t>
             Caps can be carried in existing RPL Control messages as Control
             Options, however Caps can also be queried explicitly. This section
-            provides a way for a node to query capability set of another node.
+            provides a way for a node to query the capability set of another node.
             The capability query and subsequent response messages are directly
             addressed between the two peers.
         </t>
@@ -415,8 +418,8 @@
                     </t>
                     -->
                     <t hangText="CAPQSequence:">
-                        One byte, Sequence number sent by the CAPQ sender which
-                        is reflected back by the responder in the CAPS message.
+                        One byte, Sequence number sent by the CAPQ sender and
+                        reflected back by the responder in the CAPS message.
                     </t>
                     <t hangText="Flags:">
                         One byte, set to zero by sender, ignored by receiver.
@@ -427,14 +430,14 @@
                 </list>
             </t>
             <t>
-                CAPQ base object may be followed by one or more options. The
-                Capability Type List Control Option <xref target="cap-tlist"/>
+                The CAPQ base object may be followed by one or more options. The
+                Capability Type List Control Option (see <xref target="cap-tlist"/>)
                 is used to carry a set of capability types to query about.
             </t>
             <t>
-                If the sender does not send <xref target="cap-tlist"/> option, 
-                this would indicate that the node intends to query the 
-                capability type list <xref target="cap-tlist"/> supported 
+                If the sender does not send a Capability Type List Control Option, 
+                this indicates that the node intends to query the 
+                Capability Type List supported 
                 by the target node.
             </t>
             <!--
@@ -520,9 +523,10 @@
             </t>
             <t>
                 CAPS message SHOULD contain the capability set 
-                <xref target="cap-opt"/> queried by the CAPQ sender. If 
-                the target node does not support subset of the queried 
-                capabilities then the <xref target="cap-tlist"/> option
+                <xref target="cap-opt"/> queried by the CAPQ sender. If
+                <!-- do you mean caps_obj instead? -->
+                the target node does not support a subset of the queried 
+                capabilities then the Capability Type List
                 with the unsupported cap-types SHOULD be sent back 
                 indicating the queried capabilities not-supported by the 
                 target node. For an example, check 
@@ -530,14 +534,14 @@
             </t>
             <t>
                 If the CAPQ message does not contain any 
-                <xref target="cap-tlist"/> option then the receiver MUST 
-                respond with the cap types it supports using 
-                <xref target="cap-tlist"/>.
+                Capability Type List option then the receiver MUST 
+                respond with the cap types it supports using a Capability Type List Option (see
+                <xref target="cap-tlist"/>).
             </t>
             <t>
                 If the capability set cannot be transmitted in a single message
                 (for e.g., because of MTU limitations) then multiple CAPS
-                messages could be used. All the CAPS message MUST use the same
+                messages could be used. All the CAPS messages MUST use the same
                 CAPQSequence number copied from the corresponding CAPQ message.
             </t>
             <section title="Secure CAPS">
@@ -555,12 +559,12 @@
             This section provides guidelines/recommendations towards defining
             new capabilities. Note that the capabilities might be carried as
             part of the multicast messaging such as DIO and hence the set
-            should be used in restrictive manner as far as possible.
+            should be used sparingly, as much as possible.
         </t>
         <section anchor="caps-handling-flags" title="Handling Capability flags">
             <t>
                 A node MUST drop or discard the message with an unknown
-                capability with 'D' flag set. The message MUST be discarded
+                capability with the 'D' flag set. The message MUST be discarded
                 silently.
             </t>
             <t>
@@ -587,7 +591,7 @@
                         If the node is operating as 6LR and subsequently it receives 
                             a capability from its preferred parent which it does
                             not understand with 'J' flag set, then the node has
-                            to switch itself to 6LN mode. During switching the
+                            to switch itself to 6LN mode. During switching, the
                             node needs to inform its downstream peers of its
                             changed status by sending a DIO with infinite rank
                             as mentioned in RFC6550. Alternatively, a node may
@@ -606,9 +610,9 @@
     <section anchor="roll-caps" title="Node Capabilities">
         <section anchor="cap-ind" title="Capability Indicators">
             <t> 
-                Capability Indicators indicates the capabilities supported by
-                the node in the form of simple flags. Capabilities who do not
-                have additional information to be specified could make use of
+                Capability Indicators indicate the capabilities supported by
+                the node in the form of simple flags. Capabilities that do not
+                need additional information to be specified can make use of
                 these flags to indicate their support.
             </t>
             <section title="Format of Capability Indicators">
@@ -633,11 +637,11 @@
         </section>
         <section title="Routing Resource Capability">
             <t>
-                Storing mode of operation requires each intermediate router
-                in the LLN to maintain routing states' information in the
+                Storing Mode of Operation requires each intermediate router
+                in the LLN to maintain routing state information in the
                 routing table. LLN routers typically operate with
                 constraints on processing power, memory, and energy
-                (battery power). Memory limits the number of routing states
+                (battery power). Memory limits the size of routing state
                 an LR and BR can maintain.  When the routing table of an LR
                 or BR is full, it will either reject the new DAO messages
                 received or will use some replacement policy to remove a
