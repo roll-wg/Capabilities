@@ -185,7 +185,7 @@
             </t>
 
             <t>
-				NPDAO: No-Path DAO. A DAO message that contains a Transmit
+				NPDAO: No-Path DAO. A DAO message that contains a Transit
 				Information Option with lifetime equal to 0.
             </t>
 
