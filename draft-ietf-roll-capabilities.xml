@@ -56,6 +56,12 @@
 
     <author fullname="Rahul Arvind Jadhav" initials="R.A." role="editor" surname="Jadhav">
         <address>
+            <postal>
+                <city>Bangalore</city>
+                <region>Karnataka</region>
+                <code>560037</code>
+                <country>India</country>
+            </postal>
             <email>rahul.ietf@gmail.com</email>
         </address>
     </author>
