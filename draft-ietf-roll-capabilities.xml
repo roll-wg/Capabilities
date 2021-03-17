@@ -40,7 +40,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-ietf-roll-capabilities-latest" ipr="trust200902" consensus="true">
+<rfc category="std" docName="draft-ietf-roll-capabilities-latest" ipr="trust200902">
     <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -568,33 +568,32 @@
                 node does not understand the capability.
             </t>
             <section anchor="flags-rules" title="Rules to handle capabilities flag">
+			<t>
 				<list style="hanging">
-                    <t hangText="How should a node react to capability it does
-                        not support before joining the Instance?"><vspace />
+                    <t hangText="How should a node react to capability it does not support before joining the Instance?"><vspace />
                         On receiving a capability it does not support, the node
                         MUST check the 'J' flag of the capability before
                         joining the Instance. If the 'J' flag is set then it
                         can only join as a 6LN.
                     </t>
-                    <t hangText="How should a node react to capability it does
-						not support after joining the Instance?"><vspace />
-                        If the node is operating as 6LR and subsequently it receives
-                            a capability from its preferred parent which it does
-                            not understand with 'J' flag set, then the node has
-                            to switch itself to 6LN mode. During switching, the
-                            node needs to inform its downstream peers of its
-                            changed status by sending a DIO with infinite rank
-                            as mentioned in RFC6550. Alternatively, a node may
-                            decide to switch to another parent with compatible
-                            and known capabilities.
+                    <t hangText="How should a node react to capability it does not support after joining the Instance?"><vspace />
+						If the node is operating as 6LR and subsequently it
+						receives a capability from its preferred parent which
+						it does not understand with 'J' flag set, then the node
+						has to switch itself to 6LN mode. During switching, the
+						node needs to inform its downstream peers of its
+						changed status by sending a DIO with infinite rank as
+						mentioned in RFC6550. Alternatively, a node may decide
+						to switch to another parent with compatible and known
+						capabilities.
                     </t>
-                    <t hangText="When to use and when not to use
-                        Capabilities?"><vspace /> Capabilities are used to
-                        indicate a feature that is supported by the node.
-                        Capabilities are not meant for configuration management
-                        for e.g., setting a threshold.
+					<t hangText="When to use and when not to use Capabilities?"><vspace />
+						Capabilities are used to indicate a feature that is
+						supported by the node.  Capabilities are not meant for
+						configuration management for e.g., setting a threshold.
                     </t>
 				</list>
+			</t>
             </section>
         </section>
     </section>
@@ -654,7 +653,7 @@
             </t>
             <t>
                 Routing resource capabablity sent in DIO message has link
-                local scope and it MUST not be forwarded. The 'C' bit of this
+                local scope and it MUST NOT be forwarded. The 'C' bit of this
                 capability MUST be set to 0.
             </t>
             <section title="Format of Routing Resource Capability">
